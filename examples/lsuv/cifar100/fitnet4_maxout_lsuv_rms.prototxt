@@ -1,0 +1,1399 @@
+solver_type: RMSPROP
+average_loss: 40
+stepvalue: 70000
+stepvalue: 100000
+stepvalue: 130000
+stepvalue: 150000
+stepvalue: 170000
+stepvalue: 180000
+rms_decay: 0.9
+
+test_iter: 200
+test_interval: 1000
+base_lr: 0.0005
+display: 40
+max_iter: 190000
+lr_policy: "multistep"
+gamma: 0.5
+weight_decay: 0.0005
+snapshot: 5000
+snapshot_prefix: "snapshots/fitnet4_lsuv_rms_padded"
+solver_mode: GPU
+device_id: 0
+net_param {
+  name: "CIFAR100_FitNet4"
+  layer {
+    name: "cifar"
+    type: "Data"
+    top: "data"
+    top: "label"
+    include {
+      phase: TRAIN
+    }
+    transform_param {
+      mirror: true
+      crop_size: 32
+      mean_file: "cifar100-gcn-leveldb-splits/paddedmean.binaryproto"
+    }
+    data_param {
+      source: "/cifar100-gcn-leveldb-splits/cifar100_full_train_leveldb_padded"
+      batch_size: 128
+      backend: LEVELDB
+    }
+  }
+  layer {
+    name: "cifar"
+    type: "Data"
+    top: "data"
+    top: "label"
+    include {
+      phase: TEST
+    }
+    transform_param {
+      mean_file: "cifar100-gcn-leveldb-splits/mean.binaryproto"
+    }
+    data_param {
+      source: "cifar100-gcn-leveldb-splits/cifar100_test_leveldb"
+      batch_size: 100
+      backend: LEVELDB
+    }
+  }
+  layer {
+    name: "data_drop"
+    type: "Dropout"
+    bottom: "data"
+    top: "data"
+    dropout_param {
+      dropout_ratio: 0.2
+    }
+  }
+  layer {
+    name: "conv1_1a"
+    type: "Convolution"
+    bottom: "data"
+    top: "conv1_1a"
+    param {
+      lr_mult: 1
+      decay_mult: 1
+    }
+    param {
+      lr_mult: 1
+      decay_mult: 0
+    }
+    convolution_param {
+      num_output: 32
+      pad: 1
+      kernel_size: 3
+      stride: 1
+      weight_filler {
+        type: "uniform"
+        std: 0.05
+      }
+      bias_filler {
+        type: "constant"
+      }
+    }
+  }
+  layer {
+    name: "conv1_1b"
+    type: "Convolution"
+    bottom: "data"
+    top: "conv1_1b"
+    param {
+      lr_mult: 1
+      decay_mult: 1
+    }
+    param {
+      lr_mult: 1
+      decay_mult: 0
+    }
+    convolution_param {
+      num_output: 32
+      pad: 1
+      kernel_size: 3
+      stride: 1
+      weight_filler {
+        type: "uniform"
+        std: 0.05
+      }
+      bias_filler {
+        type: "constant"
+      }
+    }
+  }
+  layer {
+    name: "conv1_1"
+    type: "Eltwise"
+    bottom: "conv1_1a"
+    bottom: "conv1_1b"
+    top: "conv1_1"
+    eltwise_param {
+      operation: MAX
+    }
+  }
+  layer {
+    name: "conv1_2a"
+    type: "Convolution"
+    bottom: "conv1_1"
+    top: "conv1_2a"
+    param {
+      lr_mult: 1
+      decay_mult: 1
+    }
+    param {
+      lr_mult: 1
+      decay_mult: 0
+    }
+    convolution_param {
+      num_output: 32
+      pad: 1
+      kernel_size: 3
+      stride: 1
+      weight_filler {
+        type: "uniform"
+        std: 0.05
+      }
+      bias_filler {
+        type: "constant"
+      }
+    }
+  }
+  layer {
+    name: "conv1_2b"
+    type: "Convolution"
+    bottom: "conv1_1"
+    top: "conv1_2b"
+    param {
+      lr_mult: 1
+      decay_mult: 1
+    }
+    param {
+      lr_mult: 1
+      decay_mult: 0
+    }
+    convolution_param {
+      num_output: 32
+      pad: 1
+      kernel_size: 3
+      stride: 1
+      weight_filler {
+        type: "uniform"
+        std: 0.05
+      }
+      bias_filler {
+        type: "constant"
+      }
+    }
+  }
+  layer {
+    name: "conv1_2"
+    type: "Eltwise"
+    bottom: "conv1_2a"
+    bottom: "conv1_2b"
+    top: "conv1_2"
+    eltwise_param {
+      operation: MAX
+    }
+  }
+  layer {
+    name: "conv1_3a"
+    type: "Convolution"
+    bottom: "conv1_2"
+    top: "conv1_3a"
+    param {
+      lr_mult: 1
+      decay_mult: 1
+    }
+    param {
+      lr_mult: 1
+      decay_mult: 0
+    }
+    convolution_param {
+      num_output: 32
+      pad: 1
+      kernel_size: 3
+      stride: 1
+      weight_filler {
+        type: "uniform"
+        std: 0.05
+      }
+      bias_filler {
+        type: "constant"
+      }
+    }
+  }
+  layer {
+    name: "conv1_3b"
+    type: "Convolution"
+    bottom: "conv1_2"
+    top: "conv1_3b"
+    param {
+      lr_mult: 1
+      decay_mult: 1
+    }
+    param {
+      lr_mult: 1
+      decay_mult: 0
+    }
+    convolution_param {
+      num_output: 32
+      pad: 1
+      kernel_size: 3
+      stride: 1
+      weight_filler {
+        type: "uniform"
+        std: 0.05
+      }
+      bias_filler {
+        type: "constant"
+      }
+    }
+  }
+  layer {
+    name: "conv1_3"
+    type: "Eltwise"
+    bottom: "conv1_3a"
+    bottom: "conv1_3b"
+    top: "conv1_3"
+    eltwise_param {
+      operation: MAX
+    }
+  }
+  layer {
+    name: "conv1_4a"
+    type: "Convolution"
+    bottom: "conv1_3"
+    top: "conv1_4a"
+    param {
+      lr_mult: 1
+      decay_mult: 1
+    }
+    param {
+      lr_mult: 1
+      decay_mult: 0
+    }
+    convolution_param {
+      num_output: 48
+      pad: 1
+      kernel_size: 3
+      stride: 1
+      weight_filler {
+        type: "uniform"
+        std: 0.05
+      }
+      bias_filler {
+        type: "constant"
+      }
+    }
+  }
+  layer {
+    name: "conv1_4b"
+    type: "Convolution"
+    bottom: "conv1_3"
+    top: "conv1_4b"
+    param {
+      lr_mult: 1
+      decay_mult: 1
+    }
+    param {
+      lr_mult: 1
+      decay_mult: 0
+    }
+    convolution_param {
+      num_output: 48
+      pad: 1
+      kernel_size: 3
+      stride: 1
+      weight_filler {
+        type: "uniform"
+        std: 0.05
+      }
+      bias_filler {
+        type: "constant"
+      }
+    }
+  }
+  layer {
+    name: "conv1_4"
+    type: "Eltwise"
+    bottom: "conv1_4a"
+    bottom: "conv1_4b"
+    top: "conv1_4"
+    eltwise_param {
+      operation: MAX
+    }
+  }
+  layer {
+    name: "conv1_5a"
+    type: "Convolution"
+    bottom: "conv1_4"
+    top: "conv1_5a"
+    param {
+      lr_mult: 1
+      decay_mult: 1
+    }
+    param {
+      lr_mult: 1
+      decay_mult: 0
+    }
+    convolution_param {
+      num_output: 48
+      pad: 1
+      kernel_size: 3
+      stride: 1
+      weight_filler {
+        type: "uniform"
+        std: 0.05
+      }
+      bias_filler {
+        type: "constant"
+      }
+    }
+  }
+  layer {
+    name: "conv1_5b"
+    type: "Convolution"
+    bottom: "conv1_4"
+    top: "conv1_5b"
+    param {
+      lr_mult: 1
+      decay_mult: 1
+    }
+    param {
+      lr_mult: 1
+      decay_mult: 0
+    }
+    convolution_param {
+      num_output: 48
+      pad: 1
+      kernel_size: 3
+      stride: 1
+      weight_filler {
+        type: "uniform"
+        std: 0.05
+      }
+      bias_filler {
+        type: "constant"
+      }
+    }
+  }
+  layer {
+    name: "conv1_5"
+    type: "Eltwise"
+    bottom: "conv1_5a"
+    bottom: "conv1_5b"
+    top: "conv1_5"
+    eltwise_param {
+      operation: MAX
+    }
+  }
+  layer {
+    name: "pool1"
+    type: "Pooling"
+    bottom: "conv1_5"
+    top: "pool1"
+    pooling_param {
+      pool: MAX
+      kernel_size: 2
+      stride: 2
+    }
+  }
+  layer {
+    name: "pool1_drop"
+    type: "Dropout"
+    bottom: "pool1"
+    top: "pool1_drop"
+    dropout_param {
+      dropout_ratio: 0.2
+    }
+  }
+  layer {
+    name: "conv2_1a"
+    type: "Convolution"
+    bottom: "pool1_drop"
+    top: "conv2_1a"
+    param {
+      lr_mult: 1
+      decay_mult: 1
+    }
+    param {
+      lr_mult: 1
+      decay_mult: 0
+    }
+    convolution_param {
+      num_output: 80
+      pad: 1
+      kernel_size: 3
+      stride: 1
+      weight_filler {
+        type: "uniform"
+        std: 0.05
+      }
+      bias_filler {
+        type: "constant"
+      }
+    }
+  }
+  layer {
+    name: "conv2_1b"
+    type: "Convolution"
+    bottom: "pool1_drop"
+    top: "conv2_1b"
+    param {
+      lr_mult: 1
+      decay_mult: 1
+    }
+    param {
+      lr_mult: 1
+      decay_mult: 0
+    }
+    convolution_param {
+      num_output: 80
+      pad: 1
+      kernel_size: 3
+      stride: 1
+      weight_filler {
+        type: "uniform"
+        std: 0.05
+      }
+      bias_filler {
+        type: "constant"
+      }
+    }
+  }
+  layer {
+    name: "conv2_1"
+    type: "Eltwise"
+    bottom: "conv2_1a"
+    bottom: "conv2_1b"
+    top: "conv2_1"
+    eltwise_param {
+      operation: MAX
+    }
+  }
+  layer {
+    name: "conv2_2a"
+    type: "Convolution"
+    bottom: "conv2_1"
+    top: "conv2_2a"
+    param {
+      lr_mult: 1
+      decay_mult: 1
+    }
+    param {
+      lr_mult: 1
+      decay_mult: 0
+    }
+    convolution_param {
+      num_output: 80
+      pad: 1
+      kernel_size: 3
+      stride: 1
+      weight_filler {
+        type: "uniform"
+        std: 0.05
+      }
+      bias_filler {
+        type: "constant"
+      }
+    }
+  }
+  layer {
+    name: "conv2_2b"
+    type: "Convolution"
+    bottom: "conv2_1"
+    top: "conv2_2b"
+    param {
+      lr_mult: 1
+      decay_mult: 1
+    }
+    param {
+      lr_mult: 1
+      decay_mult: 0
+    }
+    convolution_param {
+      num_output: 80
+      pad: 1
+      kernel_size: 3
+      stride: 1
+      weight_filler {
+        type: "uniform"
+        std: 0.05
+      }
+      bias_filler {
+        type: "constant"
+      }
+    }
+  }
+  layer {
+    name: "conv2_2"
+    type: "Eltwise"
+    bottom: "conv2_2a"
+    bottom: "conv2_2b"
+    top: "conv2_2"
+    eltwise_param {
+      operation: MAX
+    }
+  }
+  layer {
+    name: "conv2_3a"
+    type: "Convolution"
+    bottom: "conv2_2"
+    top: "conv2_3a"
+    param {
+      lr_mult: 1
+      decay_mult: 1
+    }
+    param {
+      lr_mult: 1
+      decay_mult: 0
+    }
+    convolution_param {
+      num_output: 80
+      pad: 1
+      kernel_size: 3
+      stride: 1
+      weight_filler {
+        type: "uniform"
+        std: 0.05
+      }
+      bias_filler {
+        type: "constant"
+      }
+    }
+  }
+  layer {
+    name: "conv2_3b"
+    type: "Convolution"
+    bottom: "conv2_2"
+    top: "conv2_3b"
+    param {
+      lr_mult: 1
+      decay_mult: 1
+    }
+    param {
+      lr_mult: 1
+      decay_mult: 0
+    }
+    convolution_param {
+      num_output: 80
+      pad: 1
+      kernel_size: 3
+      stride: 1
+      weight_filler {
+        type: "uniform"
+        std: 0.05
+      }
+      bias_filler {
+        type: "constant"
+      }
+    }
+  }
+  layer {
+    name: "conv2_3"
+    type: "Eltwise"
+    bottom: "conv2_3a"
+    bottom: "conv2_3b"
+    top: "conv2_3"
+    eltwise_param {
+      operation: MAX
+    }
+  }
+  layer {
+    name: "conv2_4a"
+    type: "Convolution"
+    bottom: "conv2_3"
+    top: "conv2_4a"
+    param {
+      lr_mult: 1
+      decay_mult: 1
+    }
+    param {
+      lr_mult: 1
+      decay_mult: 0
+    }
+    convolution_param {
+      num_output: 80
+      pad: 1
+      kernel_size: 3
+      stride: 1
+      weight_filler {
+        type: "uniform"
+        std: 0.05
+      }
+      bias_filler {
+        type: "constant"
+      }
+    }
+  }
+  layer {
+    name: "conv2_4b"
+    type: "Convolution"
+    bottom: "conv2_3"
+    top: "conv2_4b"
+    param {
+      lr_mult: 1
+      decay_mult: 1
+    }
+    param {
+      lr_mult: 1
+      decay_mult: 0
+    }
+    convolution_param {
+      num_output: 80
+      pad: 1
+      kernel_size: 3
+      stride: 1
+      weight_filler {
+        type: "uniform"
+        std: 0.05
+      }
+      bias_filler {
+        type: "constant"
+      }
+    }
+  }
+  layer {
+    name: "conv2_4"
+    type: "Eltwise"
+    bottom: "conv2_4a"
+    bottom: "conv2_4b"
+    top: "conv2_4"
+    eltwise_param {
+      operation: MAX
+    }
+  }
+  layer {
+    name: "conv2_5a"
+    type: "Convolution"
+    bottom: "conv2_4"
+    top: "conv2_5a"
+    param {
+      lr_mult: 1
+      decay_mult: 1
+    }
+    param {
+      lr_mult: 1
+      decay_mult: 0
+    }
+    convolution_param {
+      num_output: 80
+      pad: 1
+      kernel_size: 3
+      stride: 1
+      weight_filler {
+        type: "uniform"
+        std: 0.05
+      }
+      bias_filler {
+        type: "constant"
+      }
+    }
+  }
+  layer {
+    name: "conv2_5b"
+    type: "Convolution"
+    bottom: "conv2_4"
+    top: "conv2_5b"
+    param {
+      lr_mult: 1
+      decay_mult: 1
+    }
+    param {
+      lr_mult: 1
+      decay_mult: 0
+    }
+    convolution_param {
+      num_output: 80
+      pad: 1
+      kernel_size: 3
+      stride: 1
+      weight_filler {
+        type: "uniform"
+        std: 0.05
+      }
+      bias_filler {
+        type: "constant"
+      }
+    }
+  }
+  layer {
+    name: "conv2_5"
+    type: "Eltwise"
+    bottom: "conv2_5a"
+    bottom: "conv2_5b"
+    top: "conv2_5"
+    eltwise_param {
+      operation: MAX
+    }
+  }
+  layer {
+    name: "conv2_6a"
+    type: "Convolution"
+    bottom: "conv2_5"
+    top: "conv2_6a"
+    param {
+      lr_mult: 1
+      decay_mult: 1
+    }
+    param {
+      lr_mult: 1
+      decay_mult: 0
+    }
+    convolution_param {
+      num_output: 80
+      pad: 1
+      kernel_size: 3
+      stride: 1
+      weight_filler {
+        type: "uniform"
+        std: 0.05
+      }
+      bias_filler {
+        type: "constant"
+      }
+    }
+  }
+  layer {
+    name: "conv2_6b"
+    type: "Convolution"
+    bottom: "conv2_5"
+    top: "conv2_6b"
+    param {
+      lr_mult: 1
+      decay_mult: 1
+    }
+    param {
+      lr_mult: 1
+      decay_mult: 0
+    }
+    convolution_param {
+      num_output: 80
+      pad: 1
+      kernel_size: 3
+      stride: 1
+      weight_filler {
+        type: "uniform"
+        std: 0.05
+      }
+      bias_filler {
+        type: "constant"
+      }
+    }
+  }
+  layer {
+    name: "conv2_6"
+    type: "Eltwise"
+    bottom: "conv2_6a"
+    bottom: "conv2_6b"
+    top: "conv2_6"
+    eltwise_param {
+      operation: MAX
+    }
+  }
+  layer {
+    name: "pool2"
+    type: "Pooling"
+    bottom: "conv2_6"
+    top: "pool2"
+    pooling_param {
+      pool: MAX
+      kernel_size: 2
+      stride: 2
+    }
+  }
+  layer {
+    name: "pool2_drop"
+    type: "Dropout"
+    bottom: "pool2"
+    top: "pool2_drop"
+    dropout_param {
+      dropout_ratio: 0.2
+    }
+  }
+  layer {
+    name: "conv3_1a"
+    type: "Convolution"
+    bottom: "pool2_drop"
+    top: "conv3_1a"
+    param {
+      lr_mult: 1
+      decay_mult: 1
+    }
+    param {
+      lr_mult: 1
+      decay_mult: 0
+    }
+    convolution_param {
+      num_output: 128
+      pad: 1
+      kernel_size: 3
+      stride: 1
+      weight_filler {
+        type: "uniform"
+        std: 0.05
+      }
+      bias_filler {
+        type: "constant"
+      }
+    }
+  }
+  layer {
+    name: "conv3_1b"
+    type: "Convolution"
+    bottom: "pool2_drop"
+    top: "conv3_1b"
+    param {
+      lr_mult: 1
+      decay_mult: 1
+    }
+    param {
+      lr_mult: 1
+      decay_mult: 0
+    }
+    convolution_param {
+      num_output: 128
+      pad: 1
+      kernel_size: 3
+      stride: 1
+      weight_filler {
+        type: "uniform"
+        std: 0.05
+      }
+      bias_filler {
+        type: "constant"
+      }
+    }
+  }
+  layer {
+    name: "conv3_1"
+    type: "Eltwise"
+    bottom: "conv3_1a"
+    bottom: "conv3_1b"
+    top: "conv3_1"
+    eltwise_param {
+      operation: MAX
+    }
+  }
+  layer {
+    name: "conv3_2a"
+    type: "Convolution"
+    bottom: "conv3_1"
+    top: "conv3_2a"
+    param {
+      lr_mult: 1
+      decay_mult: 1
+    }
+    param {
+      lr_mult: 1
+      decay_mult: 0
+    }
+    convolution_param {
+      num_output: 128
+      pad: 1
+      kernel_size: 3
+      stride: 1
+      weight_filler {
+        type: "uniform"
+        std: 0.05
+      }
+      bias_filler {
+        type: "constant"
+      }
+    }
+  }
+  layer {
+    name: "conv3_2b"
+    type: "Convolution"
+    bottom: "conv3_1"
+    top: "conv3_2b"
+    param {
+      lr_mult: 1
+      decay_mult: 1
+    }
+    param {
+      lr_mult: 1
+      decay_mult: 0
+    }
+    convolution_param {
+      num_output: 128
+      pad: 1
+      kernel_size: 3
+      stride: 1
+      weight_filler {
+        type: "uniform"
+        std: 0.05
+      }
+      bias_filler {
+        type: "constant"
+      }
+    }
+  }
+  layer {
+    name: "conv3_2"
+    type: "Eltwise"
+    bottom: "conv3_2a"
+    bottom: "conv3_2b"
+    top: "conv3_2"
+    eltwise_param {
+      operation: MAX
+    }
+  }
+  layer {
+    name: "conv3_3a"
+    type: "Convolution"
+    bottom: "conv3_2"
+    top: "conv3_3a"
+    param {
+      lr_mult: 1
+      decay_mult: 1
+    }
+    param {
+      lr_mult: 1
+      decay_mult: 0
+    }
+    convolution_param {
+      num_output: 128
+      pad: 1
+      kernel_size: 3
+      stride: 1
+      weight_filler {
+        type: "uniform"
+        std: 0.05
+      }
+      bias_filler {
+        type: "constant"
+      }
+    }
+  }
+  layer {
+    name: "conv3_3b"
+    type: "Convolution"
+    bottom: "conv3_2"
+    top: "conv3_3b"
+    param {
+      lr_mult: 1
+      decay_mult: 1
+    }
+    param {
+      lr_mult: 1
+      decay_mult: 0
+    }
+    convolution_param {
+      num_output: 128
+      pad: 1
+      kernel_size: 3
+      stride: 1
+      weight_filler {
+        type: "uniform"
+        std: 0.05
+      }
+      bias_filler {
+        type: "constant"
+      }
+    }
+  }
+  layer {
+    name: "conv3_3"
+    type: "Eltwise"
+    bottom: "conv3_3a"
+    bottom: "conv3_3b"
+    top: "conv3_3"
+    eltwise_param {
+      operation: MAX
+    }
+  }
+  layer {
+    name: "conv3_4a"
+    type: "Convolution"
+    bottom: "conv3_3"
+    top: "conv3_4a"
+    param {
+      lr_mult: 1
+      decay_mult: 1
+    }
+    param {
+      lr_mult: 1
+      decay_mult: 0
+    }
+    convolution_param {
+      num_output: 128
+      pad: 1
+      kernel_size: 3
+      stride: 1
+      weight_filler {
+        type: "uniform"
+        std: 0.05
+      }
+      bias_filler {
+        type: "constant"
+      }
+    }
+  }
+  layer {
+    name: "conv3_4b"
+    type: "Convolution"
+    bottom: "conv3_3"
+    top: "conv3_4b"
+    param {
+      lr_mult: 1
+      decay_mult: 1
+    }
+    param {
+      lr_mult: 1
+      decay_mult: 0
+    }
+    convolution_param {
+      num_output: 128
+      pad: 1
+      kernel_size: 3
+      stride: 1
+      weight_filler {
+        type: "uniform"
+        std: 0.05
+      }
+      bias_filler {
+        type: "constant"
+      }
+    }
+  }
+  layer {
+    name: "conv3_4"
+    type: "Eltwise"
+    bottom: "conv3_4a"
+    bottom: "conv3_4b"
+    top: "conv3_4"
+    eltwise_param {
+      operation: MAX
+    }
+  }
+  layer {
+    name: "conv3_5a"
+    type: "Convolution"
+    bottom: "conv3_4"
+    top: "conv3_5a"
+    param {
+      lr_mult: 1
+      decay_mult: 1
+    }
+    param {
+      lr_mult: 1
+      decay_mult: 0
+    }
+    convolution_param {
+      num_output: 128
+      pad: 1
+      kernel_size: 3
+      stride: 1
+      weight_filler {
+        type: "uniform"
+        std: 0.05
+      }
+      bias_filler {
+        type: "constant"
+      }
+    }
+  }
+  layer {
+    name: "conv3_5b"
+    type: "Convolution"
+    bottom: "conv3_4"
+    top: "conv3_5b"
+    param {
+      lr_mult: 1
+      decay_mult: 1
+    }
+    param {
+      lr_mult: 1
+      decay_mult: 0
+    }
+    convolution_param {
+      num_output: 128
+      pad: 1
+      kernel_size: 3
+      stride: 1
+      weight_filler {
+        type: "uniform"
+        std: 0.05
+      }
+      bias_filler {
+        type: "constant"
+      }
+    }
+  }
+  layer {
+    name: "conv3_5"
+    type: "Eltwise"
+    bottom: "conv3_5a"
+    bottom: "conv3_5b"
+    top: "conv3_5"
+    eltwise_param {
+      operation: MAX
+    }
+  }
+  layer {
+    name: "conv3_6a"
+    type: "Convolution"
+    bottom: "conv3_5"
+    top: "conv3_6a"
+    param {
+      lr_mult: 1
+      decay_mult: 1
+    }
+    param {
+      lr_mult: 1
+      decay_mult: 0
+    }
+    convolution_param {
+      num_output: 128
+      pad: 1
+      kernel_size: 3
+      stride: 1
+      weight_filler {
+        type: "uniform"
+        std: 0.05
+      }
+      bias_filler {
+        type: "constant"
+      }
+    }
+  }
+  layer {
+    name: "conv3_6b"
+    type: "Convolution"
+    bottom: "conv3_5"
+    top: "conv3_6b"
+    param {
+      lr_mult: 1
+      decay_mult: 1
+    }
+    param {
+      lr_mult: 1
+      decay_mult: 0
+    }
+    convolution_param {
+      num_output: 128
+      pad: 1
+      kernel_size: 3
+      stride: 1
+      weight_filler {
+        type: "uniform"
+        std: 0.05
+      }
+      bias_filler {
+        type: "constant"
+      }
+    }
+  }
+  layer {
+    name: "conv3_6"
+    type: "Eltwise"fitnet4_iterinit_rms_padded_resume50K.log
+    bottom: "conv3_6a"
+    bottom: "conv3_6b"
+    top: "conv3_6"
+    eltwise_param {
+      operation: MAX
+    }
+  }
+  layer {
+    name: "pool3"
+    type: "Pooling"
+    bottom: "conv3_6"
+    top: "pool3"
+    pooling_param {
+      pool: MAX
+      global_pooling: true
+    }
+  }
+  layer {
+    name: "pool3_drop"
+    type: "Dropout"
+    bottom: "pool3"
+    top: "pool3_drop"
+    dropout_param {
+      dropout_ratio: 0.2
+    }
+  }
+  layer {
+    name: "ip1_a"
+    type: "InnerProduct"
+    bottom: "pool3_drop"
+    top: "ip1_a"
+    param {
+      lr_mult: 1
+      decay_mult: 1
+    }
+    param {
+      lr_mult: 1
+      decay_mult: 0
+    }
+    inner_product_param {
+      num_output: 500
+      weight_filler {
+        type: "uniform"
+        std: 0.05
+      }
+      bias_filler {
+        type: "constant"
+      }
+    }
+  }
+  layer {
+    name: "ip1_b"
+    type: "InnerProduct"
+    bottom: "pool3_drop"
+    top: "ip1_b"
+    param {
+      lr_mult: 1
+      decay_mult: 1
+    }
+    param {
+      lr_mult: 1
+      decay_mult: 0
+    }
+    inner_product_param {
+      num_output: 500
+      weight_filler {
+        type: "uniform"
+        std: 0.05
+      }
+      bias_filler {
+        type: "constant"
+      }
+    }
+  }
+  layer {
+    name: "ip1_c"
+    type: "InnerProduct"
+    bottom: "pool3_drop"
+    top: "ip1_c"
+    param {
+      lr_mult: 1
+      decay_mult: 1
+    }
+    param {
+      lr_mult: 1
+      decay_mult: 0
+    }
+    inner_product_param {
+      num_output: 500
+      weight_filler {
+        type: "uniform"
+        std: 0.05
+      }
+      bias_filler {
+        type: "constant"
+      }
+    }
+  }
+  layer {
+    name: "ip1_d"
+    type: "InnerProduct"
+    bottom: "pool3_drop"
+    top: "ip1_d"
+    param {
+      lr_mult: 1
+      decay_mult: 1
+    }
+    param {
+      lr_mult: 1
+      decay_mult: 0
+    }
+    inner_product_param {
+      num_output: 500
+      weight_filler {
+        type: "uniform"
+        std: 0.05
+      }
+      bias_filler {
+        type: "constant"
+      }
+    }
+  }
+  layer {
+    name: "ip1_e"
+    type: "InnerProduct"
+    bottom: "pool3_drop"
+    top: "ip1_e"
+    param {
+      lr_mult: 1
+      decay_mult: 1
+    }
+    param {
+      lr_mult: 1
+      decay_mult: 0
+    }
+    inner_product_param {
+      num_output: 500
+      weight_filler {
+        type: "uniform"
+        std: 0.05
+      }
+      bias_filler {
+        type: "constant"
+      }
+    }
+  }
+  layer {
+    name: "ip1"
+    type: "Eltwise"
+    bottom: "ip1_a"
+    bottom: "ip1_b"
+    bottom: "ip1_c"
+    bottom: "ip1_d"
+    bottom: "ip1_e"
+    top: "ip1"
+    eltwise_param {
+      operation: MAX
+    }
+  }
+  layer {
+    name: "ip1_drop"
+    type: "Dropout"
+    bottom: "ip1"
+    top: "ip1_drop"
+    dropout_param {
+      dropout_ratio: 0.2
+    }
+  }
+  layer {
+    name: "clf"
+    type: "InnerProduct"
+    bottom: "ip1_drop"
+    top: "clf"
+    param {
+      lr_mult: 1
+      decay_mult: 1
+    }
+    param {
+      lr_mult: 1
+      decay_mult: 0
+    }
+    inner_product_param {
+      num_output: 100
+      weight_filler {
+        type: "xavier"
+      }
+      bias_filler {
+        type: "constant"
+      }
+    }
+  }
+  layer {
+    name: "accuracy"
+    type: "Accuracy"
+    bottom: "clf"
+    bottom: "label"
+    top: "accuracy"
+    include {
+      phase: TEST
+    }
+  }
+  layer {
+    name: "loss"
+    type: "SoftmaxWithLoss"
+    bottom: "clf"
+    bottom: "label"
+    top: "loss"
+  }
+}

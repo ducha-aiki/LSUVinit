@@ -1,3 +1,35 @@
+# Layer-sequential unit-variance (LSUV) initialization 
+
+This is sample code for LSUV and Orthonormal initializations, implemented in python script within Caffe framework. 
+The original Caffe README is reproduced below the line.
+LSUV initialization is described in:
+
+Mishkin, D. and Matas, J.,(2015). All you need is a good init. arXiv preprint [arXiv:1511.06422](http://arxiv.org/abs/1511.06422).
+
+Orthonormal initialization is described in:
+
+Andrew M. Saxe, James L. McClelland, Surya Ganguli (2013). Exact solutions to the nonlinear dynamics of learning in deep linear neural networks. arXiv preprint [arXiv:1312.6120](http://arxiv.org/abs/1312.6120)
+
+## Examples
+
+See examples and sample log outputs in examples/lsuv. Run get_datasets.sh and training_*.sh for experiments reproduction. Note, than we haven`t freezed random seed and results may vary a little from run to run.
+Initialization script itself is in tools/extra/lsuv_init.py
+
+## Citation
+
+Please cite us if you use this code:
+
+    @ARTICLE{LSUVInit2015,
+    author = {{Mishkin}, D. and {Matas}, J.},
+    title = "{All you need is a good init}",
+    journal = {arXiv preprint arXiv:1511.06422},
+    year = 2015,
+    month = nov
+    }
+
+----
+
+
 # Caffe
 
 [![Build Status](https://travis-ci.org/BVLC/caffe.svg?branch=master)](https://travis-ci.org/BVLC/caffe)
