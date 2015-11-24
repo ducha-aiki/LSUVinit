@@ -11,8 +11,6 @@ if len (sys.argv) < 4:
   raise RuntimeError('Usage: python ' + sys.argv[0] + ' path_to_solver path_to_save_model mode')
 import caffe
 
-gpu_runline = list()
-
 solver_path = str(sys.argv[1])
 init_path = str(sys.argv[2])
 init_mode =  str(sys.argv[3])
