@@ -24,7 +24,7 @@ if  [[ ${protos} ]]; then
 fi
 
 protos=`find cifar10/ -maxdepth 1 -name '*xavier*.prototxt' -type f -exec echo '{}' \;`
-f  [[ ${protos} ]]; then
+if  [[ ${protos} ]]; then
   for pr in ${protos[@]}; do
     echo ${pr}
     b_pr=$(basename "$pr" )
