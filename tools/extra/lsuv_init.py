@@ -1,3 +1,4 @@
+
 import os
 import sys
 from pylab import *
@@ -32,7 +33,8 @@ solver = caffe.SGDSolver(solver_path)
 if os.path.isfile(init_path):
   print "Loading"
   solver.net.copy_from(init_path)
-
+# Orthonorm init code is taked from Lasagne
+# https://github.com/Lasagne/Lasagne/blob/master/lasagne/init.py
 def svd_orthonormal(shape):
         if len(shape) < 2:
             raise RuntimeError("Only shapes of length 2 or more are "
