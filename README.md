@@ -12,7 +12,7 @@ Andrew M. Saxe, James L. McClelland, Surya Ganguli (2013). Exact solutions to th
 
 update: Why it is important to scale your input to var=1 before applying LSUV:
 
-![scale-no-scale](https://github.com/ducha-aiki/caffenet-benchmark/logs/contrib/img/0_dataset_init.png)
+![scale-no-scale](https://github.com/ducha-aiki/caffenet-benchmark/blob/master/logs/contrib/img/0_dataset_init.png)
 
 
 ## Examples
