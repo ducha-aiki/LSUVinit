@@ -11,6 +11,7 @@ Orthonormal initialization is described in:
 Andrew M. Saxe, James L. McClelland, Surya Ganguli (2013). Exact solutions to the nonlinear dynamics of learning in deep linear neural networks. arXiv preprint [arXiv:1312.6120](http://arxiv.org/abs/1312.6120)
 
 **upd.:** Torch re-implementation [https://github.com/yobibyte/torch-lsuv](https://github.com/yobibyte/torch-lsuv)
+
 update: Why it is important to scale your input to var=1 before applying LSUV:
 
 ![scale-no-scale](https://github.com/ducha-aiki/caffenet-benchmark/blob/master/logs/contrib/img/0_dataset_init.png)
