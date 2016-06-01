@@ -55,7 +55,7 @@ if __name__ == '__main__':
         except:
             print('Error with layer',k, 'skipping it')
             continue
-        if ('BN' in k) or ('bn' in k):
+        if ('BN' in k) or ('bn' in k) or ('relu' in k):
             print('Skipping BatchNorm layer')
             continue;
         if 'Orthonormal' in init_mode:
