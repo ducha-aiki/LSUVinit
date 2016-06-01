@@ -6,14 +6,14 @@ import sys
 for arg in sys.argv:
     if  arg == 'help' or arg == 'HELP' or arg == '-help' or arg == '--help' or arg == '-h' or arg == '--h' or arg == '/h' or arg == '/help' or arg == '/H' or arg == '/HELP':
         print ("""____________________________________________
-		
+
 By $CAFFE_ROOT we mean the installation folder for Caffe. Place this script into $CAFFE_ROOT/tools/extra/
 
 Use it as:
     python $CAFFE_ROOT/tools/extra/lsuv.py /path/to/solver.prototxt /path/to/initialised.caffemodel LSUV
 or
     python $CAFFE_ROOT/tools/extra/lsuv.py /path/to/solver.prototxt /path/to/initialised.caffemodel Orthonormal noFetch
-	
+
 initialised.caffemodel is where the initialised model be saved to. If such file already exists, it will be loaded and the initialisation distortion will be applied to it instead.
 noFetch is an optional parameter for not loading existing "initialised.caffemodel" file.
 
