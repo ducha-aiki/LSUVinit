@@ -24,7 +24,7 @@ Initialization script itself is in tools/extra/lsuv_init.py
 
 ## Using with you current Caffe, or different framework installation
 
-If you have Caffe installed already, you can simply copy script from   [tools/extra/lsuv_init.py](https://github.com/ducha-aiki/LSUVinit/blob/master/tools/extra/lsuv_init.py) and view it's help (python lsuv_init.py -help, or just view the code) for further instructions. If you use a different framework, please, adapt that same script to your needs and notify us once you've got the code working, so we would let others know of existance of your solution if you're not against sharing your code. The script is self-explanatory and easily adaptable.
+If you have Caffe installed already, you can simply copy script from   [tools/extra/lsuv_init.py](https://github.com/ducha-aiki/LSUVinit/blob/master/tools/extra/lsuv_init.py) and view its help (python lsuv_init.py -help, or just view the code) for further instructions. If you use a different framework, please, adapt that same script to your needs and notify us once you've got the code working, so we would let others know of existance of your solution if you're not against sharing your code. The script is self-explanatory and easily adaptable.
 
 ## Citation
 
