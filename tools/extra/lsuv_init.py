@@ -39,7 +39,7 @@ It's highly recommended to """+ bcolors.BOLD + bcolors.UNDERLINE +"""USE LARGE B
 * stands for anything
 Name your """+ bcolors.WARNING +"""activation layers"""+ bcolors.ENDC +""" as """+ bcolors.OKBLUE +"""*_act*"""+ bcolors.ENDC +""", or  """+ bcolors.OKBLUE +"""*_ACT*"""+ bcolors.ENDC +"""
 Name your """+ bcolors.WARNING +"""batch normalization layers"""+ bcolors.ENDC +""" as """+ bcolors.OKBLUE +"""*BN*"""+ bcolors.ENDC +""", or """+ bcolors.OKBLUE +"""*bn*"""+ bcolors.ENDC +"""
-- so that the script wouldn't try to process stuff like """+ bcolors.WARNING +"""PReLU activation layers"""+ bcolors.ENDC +""" and get """+ bcolors.FAIL +"""stuck"""+ bcolors.ENDC +""". This algorithm can only process linear and convolutional layers. Not their activations.
+- so that the script wouldn't try to process stuff like """+ bcolors.WARNING +"""PReLU activation layers"""+ bcolors.ENDC +""" and get """+ bcolors.FAIL +"""stuck"""+ bcolors.ENDC +""". This algorithm can only process fully-connected and convolutional layers. Not their activations.
 (That doesn't mean that you can't use PReLU. Just name them as *_act*)
 
 """+ bcolors.LINE +"""____________________________________________
@@ -107,20 +107,17 @@ if __name__ == '__main__':
             print('Failed to load weights from ', init_path) 
 
     for k,v in solver.net.params.iteritems():
-        try:
-            print(k, v[0].data.shape)
-        except:
-            print('Error with layer',k, 'skipping it')
-            continue
-            
         if ('BN' in k) or ('bn' in k):
             print('Skipping BatchNorm (*BN* name) layer')
             continue;
-            
         if ('_act' in k) or ('_ACT' in k):
             print('Skipping activation (*_act* name) layer')
             continue;
-            
+        try:
+            print(k, v[0].data.shape)
+        except:
+            print('Skipping layer ', k, ' as it has no parameters to initialize')
+            continue
         if 'Orthonormal' in init_mode:
             weights=svd_orthonormal(v[0].data[:].shape)
             solver.net.params[k][0].data[:]=weights#* sqrt(2.0/(1.0+neg_slope*neg_slope));
@@ -161,7 +158,7 @@ if __name__ == '__main__':
         try:
             print(k,v.data[:].shape, ' var = ', np.var(v.data[:]), ' mean = ', np.mean(v.data[:]))
         except:
-            print('Cannot proceed layer',k,'skiping')
+            print('Skiping layer', k)
             
     print("Saving model...")
     solver.net.save(init_path)
