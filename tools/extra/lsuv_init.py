@@ -26,7 +26,7 @@ Use it as:
 """+ bcolors.ENDC +"""or
     """+ bcolors.OKGREEN +"""python $CAFFE_ROOT/tools/extra/lsuv-init.py /path/to/solver.prototxt /path/to/initialised.caffemodel Orthonormal noFetch gpu
 """+ bcolors.ENDC +"""
-"""+ bcolors.OKBLUE +"""initialised.caffemodel"""+ bcolors.ENDC +""" is where the initialised model be saved to. If such file already exists, it will be loaded and the initialisation distortion will be applied to it instead.
+"""+ bcolors.OKBLUE +"""initialised.caffemodel"""+ bcolors.ENDC +""" is where the initialised model will be saved to. If such file already exists, it will be loaded and the initialisation distortion will be applied to it instead.
 """+ bcolors.OKBLUE +"""noFetch"""+ bcolors.ENDC +""" is an optional parameter for not loading existing "initialised.caffemodel" file.
 
 It's highly recommended to """+ bcolors.BOLD + bcolors.UNDERLINE +"""USE LARGE BATCHES"""+ bcolors.ENDC +""" - set them in appropriate *.prototxt - when running LSUV. Obviously, the more different your data is, the bigger the need for larger batches. For 99% of us large batches are easier to get on the CPU using RAM and swapping, which is why CPU is the default platform for computing LSUV.
