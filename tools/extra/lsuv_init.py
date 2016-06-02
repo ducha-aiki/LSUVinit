@@ -37,9 +37,10 @@ It's highly recommended to """+ bcolors.BOLD + bcolors.UNDERLINE +"""USE LARGE B
 
 """+ bcolors.BOLD + bcolors.FAIL +"""NOTE!"""+ bcolors.ENDC +"""
 * stands for anything
-Name your activation layers as """+ bcolors.OKBLUE +"""*_act*"""+ bcolors.ENDC +""", or  """+ bcolors.OKBLUE +"""*_ACT*"""+ bcolors.ENDC +"""
-Name your batch normalization layers as """+ bcolors.OKBLUE +"""*BN*"""+ bcolors.ENDC +""", or """+ bcolors.OKBLUE +"""*bn*"""+ bcolors.ENDC +"""
-- so that the script wouldn't try to process stuff like PReLU activation layers and get stuck. This algorithm can only process linear and convolutional layers.
+Name your """+ bcolors.WARNING +"""activation layers"""+ bcolors.ENDC +""" as """+ bcolors.OKBLUE +"""*_act*"""+ bcolors.ENDC +""", or  """+ bcolors.OKBLUE +"""*_ACT*"""+ bcolors.ENDC +"""
+Name your """+ bcolors.WARNING +"""batch normalization layers"""+ bcolors.ENDC +""" as """+ bcolors.OKBLUE +"""*BN*"""+ bcolors.ENDC +""", or """+ bcolors.OKBLUE +"""*bn*"""+ bcolors.ENDC +"""
+- so that the script wouldn't try to process stuff like """+ bcolors.WARNING +"""PReLU activation layers"""+ bcolors.ENDC +""" and get """+ bcolors.FAIL +"""stuck"""+ bcolors.ENDC +""". This algorithm can only process linear and convolutional layers. Not their activations.
+(That doesn't mean that you can't use PReLU. Just name them as *_act*)
 
 """+ bcolors.LINE +"""____________________________________________
 """ + bcolors.ENDC)
