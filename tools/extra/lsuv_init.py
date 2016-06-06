@@ -37,10 +37,10 @@ Parameters:
 """+ bcolors.BLUE +"""LSUV"""+ bcolors.END +"""            tries to adjust variance to make it equal to 1 on your data.
 """+ bcolors.BLUE +"""Orthonormal"""+ bcolors.END +"""     paper: """+ bcolors.BLUE +"""http://arxiv.org/abs/1312.6120"""+ bcolors.END +"""
 """+ bcolors.BLUE +"""OrthonormalLSUV"""+ bcolors.END +""" paper: """+ bcolors.BLUE +"""http://arxiv.org/abs/1511.06422"""+ bcolors.END +""" is the """+ bcolors.GREEN     +"""classical LSUV from the paper"""+ bcolors.END +""". It first generates values from scratch with Orthonormal initialization and then adjusts them scaling each layer and adjusting its variance.
-"""+ bcolors.BLUE +"""ONN"""+ bcolors.END +"""  """+ bcolors.YELLOW +"""experimental per-neuron"""+ bcolors.END +""" normalization. Uses Orthonormal init first. Then adjusts neural activations on tested set to have certain variance. If used with mean=[float] parameter, will also adjust all biases accordingly.
+"""+ bcolors.BLUE +"""ONN"""+ bcolors.END +"""  """+ bcolors.YELLOW +"""experimental per-neuron"""+ bcolors.END +""" normalization. Uses Orthonormal init first. Then adjusts neural activations on tested set to have certain variance. If used with mean=[float] parameter, will also adjust all biases accordingly. Per-neuron works slower than layerwise version.
 
 """+ bcolors.BLUE +"""mean=0.2"""+ bcolors.END +"""  set """+ bcolors.YELLOW +"""mean"""+ bcolors.END +""" activation you want neurons to have. It will adjust their biases accordingly. Works for both per-neuron, or per-layer levels depending on which you choose - LSUV, or ONN.
-"""+ bcolors.BLUE +"""std=1."""+ bcolors.END +"""  defaults to 1. Set required """+ bcolors.YELLOW +"""standard deviation"""+ bcolors.END +""" for neuron activations here. It will scale weights accordingly. Works for both per-neuron, or per-layer levels depending on which you choose - LSUV, or ONN.
+"""+ bcolors.BLUE +"""std=1."""+ bcolors.END +"""  float value, defaults to 1 if not set. Set required """+ bcolors.YELLOW +"""standard deviation"""+ bcolors.END +""" for neuron activations here. It will scale weights accordingly. Works for both per-neuron, or per-layer levels depending on which you choose - LSUV, or ONN.
 
 """+ bcolors.BLUE +"""cpu"""+ bcolors.END +"""  is an optional parameter for computing on CPU   instead of (default) GPU (the first one of them - "device #0" - if you have several). On GPU, LSUV init computation is likely to happen faster.
 """+ bcolors.BLUE +"""gpu1"""+ bcolors.END +""" is an optional parameter for computing on GPU#1 instead of (default) GPU#0
@@ -200,6 +200,10 @@ if __name__ == '__main__':
     first_layer = ''
 
     for k,v in solver.net.params.iteritems():
+        print (bcolors.YELLOW + """___________________________________________________
+        
+        """ + bcolors.END)
+
         if first_layer == '':
             first_layer = k
             
@@ -221,6 +225,9 @@ if __name__ == '__main__':
             print( solver.net.blobs[k].data[:].shape )
             activations = np.empty( shape = ((nTimes,) + solver.net.blobs[k].data[:].shape), dtype=float32 )
             gc.collect()
+
+            if set_mean!= -999:
+                solver.net.params[k][1].data.fill(0.)   # to shorten calculation time
 
             for i in xrange(0, nTimes):
                 if var_before_relu_if_inplace:
@@ -353,45 +360,43 @@ if __name__ == '__main__':
                     break
 
                 # print(a.shape, 'a.shape')
-                mean = a.mean( 1, dtype=np.float64 )
-                #   Centering neuronal activations using biases
-                a1   = a.transpose()
-                if set_mean != -999:
-                    a1  -= mean
-                    a1  += set_mean
-                    b   -= mean
-                    b   += set_mean
-                    print('\n', time.strftime("%d %H:%M:%S"), bcolors.BLUE, k, bcolors.END,'Adjusted mean to become ', set_mean)
-                stdD = a.std(  axis=1, ddof=1, dtype=np.float64  )
-                w    = w.transpose()
-                w   /= stdD
-                if required_stdeviation != 1.:
-                    w *= required_stdeviation
+                w     = w.transpose()
+                stdD  = a.std(  axis=1, ddof=1, dtype=np.float64  )
 
-                print(bcolors.GREEN, "Neurons' weights rescaled to produce activations with", required_stdeviation,"standard deviation.", bcolors.END, 'Mean of standard deviation of neural activations (per neuron) was',    stdD.mean(dtype=np.float64), ', std of standard deviations themselves was',    stdD.std(ddof=1, dtype=np.float64), '. Layer-wise mean of neurons\' mean was', mean.mean(dtype=np.float64))
+                if set_mean!= -999:
+                    #   Center neuronal activations at zero by manipulating bias.
+                    #   Remember that currently all biases are set to 0.
+                    mean    = a.mean( 1, dtype=np.float64 )
+                    maxD    = np.amax(mean)
+                    
+                    futMean = mean * required_stdeviation / stdD # future mean --- one that will be after std adjustment
+                    b       = set_mean - futMean
+                    print('\n', time.strftime("%d %H:%M:%S"), bcolors.BLUE, k, bcolors.END,bcolors.GREEN,'Adjusted biases and scaled weights for mean to become ', set_mean, bcolors.END, '. Layer-wise mean of neurons\' mean values used to be', mean.mean(dtype=np.float64))
+                    print('\n', bcolors.YELLOW, 'Maximum mean activation shift due to weight influence used to be', maxD, bcolors.END)
+
+                w    *= required_stdeviation/stdD
+
+                print(bcolors.GREEN, "Neurons' weights rescaled to produce activations with", required_stdeviation,"standard deviation.", bcolors.END, 'Mean standard deviation of neural activations (per neuron) was', stdD.mean(dtype=np.float64), '. Layerwise standard deviations of neuron-level standard deviations used to be', stdD.std(ddof=1, dtype=np.float64) )
 
             else:
                 #   per layer analysis
-                mean  = activations.mean( dtype=np.float64 )
+                stdD  = np.std(  activations, ddof=1, dtype=np.float64  )
+                b     = solver.net.params[k][1].data[:]
+
                 if set_mean != -999:
                     #   Center neuronal activations at zero by manipulating bias
-                    solver.net.params[k][1].data[:] -= mean
-                    activations                     -= mean
-                    solver.net.params[k][1].data[:] += set_mean
-                    activations                     += set_mean
-                    print('\n', time.strftime("%d %H:%M:%S"), bcolors.BLUE, k, bcolors.END,'Adjusted mean to become ', set_mean)
-
-                stdD  = np.std(  activations, ddof=1, dtype=np.float64  )
+                    #   Remember that currently all biases are set to 0.
+                    mean    = activations.mean( dtype=np.float64 )
+                    futMean = mean * required_stdeviation / stdD
+                    b       = set_mean - futMean
+                    print('\n', time.strftime("%d %H:%M:%S"), bcolors.BLUE, k, bcolors.END, bcolors.GREEN,'Adjusted biases and scaled weights for mean to become ', set_mean, bcolors.END,'. Mean activation used to be ~', mean)
 
                 # print(activations.shape, 'activations.shape')
-                print(time.strftime("%d %H:%M:%S"), bcolors.BLUE, k, bcolors.END,'Standard deviation was ~', stdD,', mean was ~', mean)
                 sys.stdout.flush()
-                solver.net.params[k][0].data[:] /= stdD
-                if required_stdeviation != 1.:
-                    solver.net.params[k][0].data[:] *= required_stdeviation
 
+                solver.net.params[k][0].data[:] *= required_stdeviation/stdD # multiplication runs faster than division
 
-                print(bcolors.GREEN, "Layer's weights rescaled to produce activations with", required_stdeviation,"standard deviation.", bcolors.END)#, 'in',    iter_num, 'iterations')
+                print(bcolors.GREEN, "Layer's weights rescaled to produce activations with", required_stdeviation,"standard deviation.", bcolors.END,'Before, standard deviation used to be ~', stdD)#, 'in',    iter_num, 'iterations')
                     
     print(bcolors.GREEN + """Initialization finished!""" + bcolors.YELLOW + """
 
@@ -403,7 +408,7 @@ Testing on a single batch. That's why numbers will not be as accurate. Also, don
             stdD  = np.std(  v, ddof=1, dtype=np.float64  )
             mean  = np.mean( v, dtype=np.float64 )
         
-            print(bcolors.BLUE, k, bcolors.RED if abs(stdD - required_stdeviation)>margin*2 or (set_mean != -999 and abs(mean)>margin*2) else bcolors.END,'standard deviation ~', stdD,', mean ~', mean, bcolors.END)
+            print(bcolors.BLUE, k, bcolors.RED if abs(stdD - required_stdeviation)>margin or (set_mean != -999 and abs(mean - set_mean)>margin) else bcolors.END,'standard deviation ~', stdD,', mean ~', mean, bcolors.END)
         except:
             print('Cannot proceed layer',k,'skiping')
             print('Skiping layer', k)
