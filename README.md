@@ -14,6 +14,8 @@ Andrew M. Saxe, James L. McClelland, Surya Ganguli (2013). Exact solutions to th
 
 **upd.:** Keras re-implementation [https://github.com/ducha-aiki/LSUV-keras](https://github.com/ducha-aiki/LSUV-keras)
 
+**New!** PyTorch re-implementation [https://github.com/ducha-aiki/LSUV-pytorch](https://github.com/ducha-aiki/LSUV-pytorch)
+
 
 update: Why it is important to scale your input to var=1 before applying LSUV:
 
