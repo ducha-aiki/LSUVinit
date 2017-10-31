@@ -16,6 +16,7 @@ Andrew M. Saxe, James L. McClelland, Surya Ganguli (2013). Exact solutions to th
 
 **New!** PyTorch re-implementation [https://github.com/ducha-aiki/LSUV-pytorch](https://github.com/ducha-aiki/LSUV-pytorch)
 
+**New!** Thinc re-implementation [LSUV-thinc](https://github.com/explosion/thinc/blob/e653dd3dfe91f8572e2001c8943dbd9b9401768b/thinc/neural/_lsuv.py)
 
 update: Why it is important to scale your input to var=1 before applying LSUV:
 
